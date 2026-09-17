@@ -4,7 +4,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export const TRIPETTO_URL = "https://tripetto.app/template/05KVZ08IHH";
+export const TRIPETTO_URL = "https://tripetto.app/run/RS7RIX2M6W";
 
 /* ------------------------------------------------------------------ */
 /* Types — ready to swap with a real jobs DB / API later               */

@@ -50,20 +50,39 @@ export default function ApplyForm() {
   useEffect(() => {
     if (started.current) return; // guard against StrictMode double-invoke
     started.current = true;
+    let cancelled = false;
     (async () => {
       try {
         for (const src of SCRIPTS) await loadScript(src);
+        if (cancelled) return;
         if (!window.TripettoStudio || !window.TripettoClassic) throw new Error("Tripetto failed to initialise");
         window.TripettoStudio.form({
           runner: window.TripettoClassic,
           token: TRIPETTO_TOKEN,
           element: TRIPETTO_ELEMENT_ID,
         });
-        setStatus("ready");
+        // Verify the form actually rendered — the SDK call can succeed
+        // while rendering nothing (bad token, blocked CDN, etc.).
+        // Poll for mounted content, then fall back to error state with
+        // the direct run link if nothing appears.
+        const deadline = Date.now() + 15000;
+        while (Date.now() < deadline) {
+          if (cancelled) return;
+          const el = document.getElementById(TRIPETTO_ELEMENT_ID);
+          if (el && el.childElementCount > 0) {
+            if (!cancelled) setStatus("ready");
+            return;
+          }
+          await new Promise((r) => setTimeout(r, 500));
+        }
+        if (!cancelled) setStatus("error");
       } catch {
-        setStatus("error");
+        if (!cancelled) setStatus("error");
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -144,6 +163,7 @@ export default function ApplyForm() {
               id={TRIPETTO_ELEMENT_ID}
               aria-busy={status === "loading"}
               aria-label="RAYEXPESS student application form"
+              className={status === "error" ? "hidden" : undefined}
             />
             <noscript>
               <p className="p-4 text-center text-[14.5px]">
