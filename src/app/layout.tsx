@@ -5,23 +5,27 @@ import "./globals.css";
 const display = Space_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "700"],
+  display: "swap",
 });
 const body = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "600", "700"],
+  display: "swap",
 });
 const serif = Instrument_Serif({
   variable: "--font-serif",
   subsets: ["latin"],
   weight: ["400"],
-  style: ["normal", "italic"],
+  style: ["italic"],
+  display: "swap",
 });
 const mono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {

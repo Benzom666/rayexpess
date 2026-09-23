@@ -1,17 +1,21 @@
+import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import ForStudents from "@/components/ForStudents";
 import HowItWorks from "@/components/HowItWorks";
-import FieldMatching from "@/components/FieldMatching";
-import Benefits from "@/components/Benefits";
-import Employers from "@/components/Employers";
-import Opportunities from "@/components/Opportunities";
-import CareerPath from "@/components/CareerPath";
-import AboutTrust from "@/components/AboutTrust";
-import TestimonialsFaq from "@/components/TestimonialsFaq";
-import ApplyForm from "@/components/ApplyForm";
-import FinalCtaFooter from "@/components/FinalCtaFooter";
+
+// Below-fold sections load in separate chunks so first paint stays fast
+// (per Next.js lazy-loading guide). SSR stays on — only the JS splits.
+const FieldMatching = dynamic(() => import("@/components/FieldMatching"));
+const Benefits = dynamic(() => import("@/components/Benefits"));
+const Employers = dynamic(() => import("@/components/Employers"));
+const Opportunities = dynamic(() => import("@/components/Opportunities"));
+const CareerPath = dynamic(() => import("@/components/CareerPath"));
+const AboutTrust = dynamic(() => import("@/components/AboutTrust"));
+const TestimonialsFaq = dynamic(() => import("@/components/TestimonialsFaq"));
+const ApplyForm = dynamic(() => import("@/components/ApplyForm"));
+const FinalCtaFooter = dynamic(() => import("@/components/FinalCtaFooter"));
 
 export default function Page() {
   const jsonLd = {

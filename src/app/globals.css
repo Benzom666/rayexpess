@@ -98,9 +98,38 @@ body {
   height: 0.32em;
 }
 
+/* ---- reveal on scroll (zero-JS-lib, IO-driven) ---- */
+.rv {
+  opacity: 0;
+  transform: translateY(var(--rv-y, 28px));
+  transition: opacity 0.7s cubic-bezier(0.22, 0.9, 0.28, 1), transform 0.7s cubic-bezier(0.22, 0.9, 0.28, 1);
+  will-change: opacity, transform;
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- hero entrance (CSS only, no motion lib) ---- */
+@keyframes hero-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-anim {
+  opacity: 0;
+  animation: hero-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-anim-1 { animation-delay: 0s; }
+.hero-anim-2 { animation-delay: 0.15s; }
+.hero-anim-3 { animation-delay: 0.25s; }
+.hero-anim-4 { animation-delay: 0.4s; }
+
 /* ---- reveal defaults (framer handles transform) ---- */
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee { animation: none; }
+  .rv { opacity: 1; transform: none; transition: none; }
+  .hero-anim { opacity: 1; animation: none; }
+  .ray-flow { animation: none; }
   html { scroll-behavior: auto; }
 }
 

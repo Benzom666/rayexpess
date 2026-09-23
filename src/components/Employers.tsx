@@ -15,8 +15,8 @@ export default function Employers() {
         {/* left — ink panel */}
         <Reveal className="h-full">
           <div className="grain relative flex h-full flex-col justify-between overflow-hidden bg-ink p-8 text-white md:p-12">
-            <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-line/40 blur-[90px]" />
-            <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-ray/20 blur-[90px]" />
+            <div aria-hidden className="pointer-events-none absolute -right-24 -top-24 hidden size-72 rounded-full bg-line/40 blur-[90px] sm:block" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-16 hidden size-72 rounded-full bg-ray/20 blur-[90px] sm:block" />
             <div className="relative">
               <Eyebrow route="Route 05" station="For employers" light />
               <h2 className="mt-4 font-display text-4xl font-bold leading-[1.02] tracking-[-0.02em] sm:text-5xl">

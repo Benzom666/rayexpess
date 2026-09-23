@@ -1,5 +1,3 @@
-"use client";
-import { motion } from "framer-motion";
 import { BadgeCheck, MapPin, Clock, Sparkles, ArrowRight, Building2 } from "lucide-react";
 import { Eyebrow, ApplyButton } from "./ui";
 
@@ -8,19 +6,16 @@ const STOPS = ["Education", "Experience", "Career"];
 export default function Hero() {
   return (
     <section id="top" className="grain relative overflow-hidden pb-10 pt-[110px] md:pt-[140px]">
-      {/* ambient ray glow — single warm wash, no purple */}
-      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] size-[560px] rounded-full bg-ray/25 blur-[120px]" />
-      <div aria-hidden className="pointer-events-none absolute left-[-8%] top-64 size-[380px] rounded-full bg-line/10 blur-[110px]" />
+      {/* ambient ray glow — smaller + softer on mobile to save GPU */}
+      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] size-[320px] rounded-full bg-ray/25 blur-[80px] md:size-[560px] md:blur-[120px]" />
+      <div aria-hidden className="pointer-events-none absolute left-[-8%] top-64 hidden size-[380px] rounded-full bg-line/10 blur-[110px] sm:block" />
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 md:px-8 lg:grid-cols-12 lg:gap-6">
         {/* ---- left: thesis ---- */}
         <div className="lg:col-span-7 lg:pr-6">
           <Eyebrow route="Student career express" station="Canada · Est. for students" />
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-5 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] sm:text-[64px] lg:text-[84px]"
+          <h1
+            className="hero-anim hero-anim-1 mt-5 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] sm:text-[64px] lg:text-[84px]"
           >
             Your education
             <br />
@@ -29,26 +24,20 @@ export default function Hero() {
               somewhere.
               <svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden>
                 <path d="M4 14 C 80 6, 200 6, 296 12" fill="none" stroke="#FFB800" strokeWidth="9" strokeLinecap="round" />
-              </svg>
-            </span>
-          </motion.h1>
+                </svg>
+              </span>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="mt-6 max-w-xl text-[16.5px] leading-relaxed text-ink/70 md:text-lg"
+          <p
+            className="hero-anim hero-anim-2 mt-6 max-w-xl text-[16.5px] leading-relaxed text-ink/70 md:text-lg"
           >
             <strong className="font-bold text-ink">RAYEXPESS connects students</strong> with jobs that match
             their field of study, skills, schedule, and career goals — so you can gain real experience{" "}
             <em className="font-serif italic">while you&apos;re still studying.</em>
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="mt-8 flex flex-wrap items-center gap-3"
+          <div
+            className="hero-anim hero-anim-3 mt-8 flex flex-wrap items-center gap-3"
           >
             <ApplyButton variant="ray" className="px-7 py-4 text-base">
               Find Student Opportunities
@@ -60,13 +49,10 @@ export default function Hero() {
               <Building2 className="size-4" aria-hidden />
               Hire Student Talent
             </a>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.7 }}
-            className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
+          <div
+            className="hero-anim hero-anim-4 mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
           >
             <div className="flex -space-x-2.5" aria-hidden>
               {["AK", "JM", "PS", "+9"].map((t, i) => (
@@ -84,16 +70,13 @@ export default function Hero() {
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink/55">
               Student-focused employment · Field-matched · Flexible schedules
             </p>
-          </motion.div>
+          </div>
         </div>
 
         {/* ---- right: ticket stack + ray line ---- */}
         <div className="relative lg:col-span-5">
-          <motion.div
-            initial={{ opacity: 0, y: 40, rotate: 2 }}
-            animate={{ opacity: 1, y: 0, rotate: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto max-w-[420px]"
+          <div
+            className="hero-anim hero-anim-3 relative mx-auto max-w-[420px]"
           >
             {/* route rail */}
             <div className="mb-4 flex items-center justify-between rounded-2xl bg-ink px-5 py-3.5 text-white">
@@ -162,7 +145,7 @@ export default function Hero() {
             <div className="absolute -right-4 bottom-24 hidden rotate-3 items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-white shadow-lg sm:flex">
               <Sparkles className="size-4 text-ray" /> <span className="font-display text-xs font-bold">Study. Work. Build.</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

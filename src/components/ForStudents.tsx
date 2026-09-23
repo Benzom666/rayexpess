@@ -1,4 +1,3 @@
-"use client";
 import { Crosshair, CalendarClock, FlaskConical, Users, SlidersHorizontal, Network } from "lucide-react";
 import { Eyebrow, Reveal, ApplyButton } from "./ui";
 

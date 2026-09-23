@@ -5,37 +5,12 @@ import { Eyebrow, Reveal } from "./ui";
 import { TRIPETTO_URL } from "@/lib/data";
 
 /* ------------------------------------------------------------------ */
-/* EDITABLE: Tripetto embedded application form.                       */
-/* Replace TOKEN with your own embed token from Tripetto Studio.       */
+/* Performance fix: the old embed pulled the full Tripetto Studio      */
+/* editor (~MBs of JS) on initial page load and blocked the main       */
+/* thread — the main cause of "stuck / very slow" on PC + mobile.      */
+/* Now we load an isolated iframe ONLY when the user scrolls near      */
+/* the form. Zero Tripetto JS on the main page until then.             */
 /* ------------------------------------------------------------------ */
-const TRIPETTO_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoieE9ZbU5xTXoxL2lTVzhZS3VLSzhqZW5xUTRSN3RROFhuQWo5R2lKOXBoaz0iLCJkZWZpbml0aW9uIjoiS3U2MS9NOTlPc0lrUzVUV0thOUJMMGpFNnY4T2tadDQrUmpMb245TGxiST0iLCJ0eXBlIjoiY29sbGVjdCJ9.d0ucmSzi9upztNOZRgOn6dkPTwXXkdANGKRf7T9YiuQ";
-const TRIPETTO_ELEMENT_ID = "tripetto-j1kryt";
-
-const SCRIPTS = [
-  "https://cdn.jsdelivr.net/npm/@tripetto/runner",
-  "https://cdn.jsdelivr.net/npm/@tripetto/runner-classic",
-  "https://cdn.jsdelivr.net/npm/@tripetto/studio",
-];
-
-declare global {
-  interface Window {
-    TripettoStudio?: { form: (args: { runner: unknown; token: string; element: string }) => void };
-    TripettoClassic?: unknown;
-  }
-}
-
-function loadScript(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) return resolve();
-    const s = document.createElement("script");
-    s.src = src;
-    s.async = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error(`Failed to load ${src}`));
-    document.body.appendChild(s);
-  });
-}
 
 const NEXT_STEPS = [
   "Tell us about your education, skills and availability",
@@ -44,49 +19,31 @@ const NEXT_STEPS = [
 ];
 
 export default function ApplyForm() {
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
-  const started = useRef(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [iframeReady, setIframeReady] = useState(false);
 
   useEffect(() => {
-    if (started.current) return; // guard against StrictMode double-invoke
-    started.current = true;
-    let cancelled = false;
-    (async () => {
-      try {
-        for (const src of SCRIPTS) await loadScript(src);
-        if (cancelled) return;
-        if (!window.TripettoStudio || !window.TripettoClassic) throw new Error("Tripetto failed to initialise");
-        window.TripettoStudio.form({
-          runner: window.TripettoClassic,
-          token: TRIPETTO_TOKEN,
-          element: TRIPETTO_ELEMENT_ID,
-        });
-        // Verify the form actually rendered — the SDK call can succeed
-        // while rendering nothing (bad token, blocked CDN, etc.).
-        // Poll for mounted content, then fall back to error state with
-        // the direct run link if nothing appears.
-        const deadline = Date.now() + 15000;
-        while (Date.now() < deadline) {
-          if (cancelled) return;
-          const el = document.getElementById(TRIPETTO_ELEMENT_ID);
-          if (el && el.childElementCount > 0) {
-            if (!cancelled) setStatus("ready");
-            return;
-          }
-          await new Promise((r) => setTimeout(r, 500));
+    const el = sectionRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Still lazy-load, just with a wider margin so it is ready.
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShouldLoad(true);
+          io.disconnect();
         }
-        if (!cancelled) setStatus("error");
-      } catch {
-        if (!cancelled) setStatus("error");
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+      },
+      { rootMargin: "600px 0px" } // start loading shortly before it scrolls into view
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   return (
-    <section id="apply" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-20 md:px-8 md:py-28">
+    <section ref={sectionRef} id="apply" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-20 md:px-8 md:py-28">
       <Reveal>
         <Eyebrow route="Route 11" station="Apply · takes ~4 minutes" />
         <div className="mt-4 grid gap-6 lg:grid-cols-12 lg:items-end">
@@ -118,7 +75,7 @@ export default function ApplyForm() {
               ))}
             </ol>
             <div className="mt-7 border-t border-white/12 pt-5">
-              <p className="text-[13.5px] text-white/55">Form not loading?</p>
+              <p className="text-[13.5px] text-white/55">Prefer a new tab?</p>
               <a
                 href={TRIPETTO_URL}
                 target="_blank"
@@ -131,46 +88,53 @@ export default function ApplyForm() {
           </aside>
         </Reveal>
 
-        {/* live form */}
+        {/* live form — isolated iframe, lazy */}
         <Reveal delay={0.1} className="lg:col-span-8">
           <div className="relative overflow-hidden rounded-[22px] bg-white p-4 ring-1 ring-ink/10 shadow-[8px_8px_0_0_#0C1022] sm:p-8">
-            {status === "loading" && (
-              <div className="space-y-4 p-4" role="status" aria-live="polite" aria-label="Loading application form">
-                <p className="flex items-center gap-2 font-display text-sm font-bold text-ink/60">
-                  <Loader2 className="size-4 animate-spin" aria-hidden /> Loading your application…
-                </p>
-                {[92, 100, 78, 100, 60].map((w, i) => (
-                  <div key={i} className="h-12 animate-pulse rounded-xl bg-paper ring-1 ring-ink/8" style={{ width: `${w}%` }} />
-                ))}
-              </div>
-            )}
-            {status === "error" && (
-              <div className="p-6 text-center" role="alert">
-                <p className="font-display text-xl font-bold">The form couldn&apos;t load here.</p>
-                <p className="mt-2 text-[14.5px] text-ink/60">Open it directly — it takes about 4 minutes.</p>
-                <a
-                  href={TRIPETTO_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+            {!shouldLoad ? (
+              <div className="p-6 text-center" aria-label="Application form placeholder">
+                <p className="font-display text-xl font-bold">Ready when you are.</p>
+                <p className="mt-2 text-[14.5px] text-ink/60">The application loads as you scroll — about 4 minutes to complete.</p>
+                <button
+                  onClick={() => setShouldLoad(true)}
                   className="mt-5 inline-flex items-center gap-2 rounded-full bg-ray px-7 py-3.5 font-display text-[15px] font-bold text-ink shadow-[4px_4px_0_0_#0C1022] transition-transform hover:-translate-y-0.5"
                 >
-                  Open Student Application <ExternalLink className="size-4" aria-hidden />
-                </a>
+                  Load Student Application
+                </button>
+                <p className="mt-4">
+                  <a href={TRIPETTO_URL} target="_blank" rel="noopener noreferrer" className="font-display text-sm font-bold text-ink/60 underline">
+                    Or open in a new tab
+                  </a>
+                </p>
               </div>
+            ) : (
+              <>
+                {!iframeReady && (
+                  <div className="space-y-4 p-4" role="status" aria-live="polite" aria-label="Loading application form">
+                    <p className="flex items-center gap-2 font-display text-sm font-bold text-ink/60">
+                      <Loader2 className="size-4 animate-spin" aria-hidden /> Loading your application…
+                    </p>
+                    {[92, 100, 78, 100, 60].map((w, i) => (
+                      <div key={i} className="h-12 animate-pulse rounded-xl bg-paper ring-1 ring-ink/8" style={{ width: `${w}%` }} />
+                    ))}
+                  </div>
+                )}
+                <iframe
+                  src={TRIPETTO_URL}
+                  title="RAYEXPESS student application form"
+                  loading="lazy"
+                  onLoad={() => setIframeReady(true)}
+                  className={iframeReady ? "h-[720px] w-full rounded-xl border-0" : "h-[420px] w-full rounded-xl border-0"}
+                  allow="camera; microphone"
+                />
+                <noscript>
+                  <p className="p-4 text-center text-[14.5px]">
+                    JavaScript is required for the application form.{" "}
+                    <a href={TRIPETTO_URL} className="font-bold underline">Open it here instead.</a>
+                  </p>
+                </noscript>
+              </>
             )}
-            {/* Tripetto mounts here. Skeleton shows above it while loading. */}
-            <div
-              id={TRIPETTO_ELEMENT_ID}
-              aria-busy={status === "loading"}
-              aria-label="RAYEXPESS student application form"
-              className={status === "error" ? "hidden" : undefined}
-            />
-            <noscript>
-              <p className="p-4 text-center text-[14.5px]">
-                JavaScript is required for the application form.{" "}
-                <a href={TRIPETTO_URL} className="font-bold underline">Open it here instead.</a>
-              </p>
-            </noscript>
           </div>
         </Reveal>
       </div>

@@ -8,8 +8,8 @@ export default function FinalCtaFooter() {
       <section className="px-4 pb-6 pt-4 md:px-8">
         <Reveal>
           <div className="grain relative mx-auto max-w-7xl overflow-hidden rounded-[32px] bg-ray px-6 py-16 text-center text-ink md:py-24">
-            <div aria-hidden className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-white/40 blur-[80px]" />
-            <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-16 size-80 rounded-full bg-ink/15 blur-[80px]" />
+            <div aria-hidden className="pointer-events-none absolute -left-20 -top-20 hidden size-72 rounded-full bg-white/40 blur-[80px] sm:block" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-16 hidden size-80 rounded-full bg-ink/15 blur-[80px] sm:block" />
             <p className="relative font-mono text-[11px] uppercase tracking-[0.24em]">◆ Last stop — your career</p>
             <h2 className="relative mx-auto mt-4 max-w-3xl font-display text-4xl font-bold leading-[1.0] tracking-[-0.025em] sm:text-6xl">
               Don&apos;t wait until graduation to <span className="font-serif font-normal italic">start your career.</span>

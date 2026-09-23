@@ -1,4 +1,3 @@
-"use client";
 import { ClipboardList, Compass, Handshake, Rocket } from "lucide-react";
 import { Eyebrow, Reveal, ApplyButton } from "./ui";
 
