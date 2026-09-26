@@ -1,151 +1,76 @@
-import { BadgeCheck, MapPin, Clock, Sparkles, ArrowRight, Building2 } from "lucide-react";
-import { Eyebrow, ApplyButton } from "./ui";
+import { BadgeCheck, Clock, ShieldCheck, MapPin, ArrowDown } from "lucide-react";
+import { Eyebrow } from "./ui";
+import ApplyForm from "./ApplyForm";
 
-const STOPS = ["Education", "Experience", "Career"];
+const TRUST = [
+  { icon: BadgeCheck, text: "Free to apply — no experience needed" },
+  { icon: Clock, text: "Takes ~4 minutes, right on this page" },
+  { icon: ShieldCheck, text: "Reviewed by a real human, not a bot" },
+  { icon: MapPin, text: "Ontario, Canada · hire@rayexpess.ca" },
+];
 
 export default function Hero() {
   return (
-    <section id="top" className="grain relative overflow-hidden pb-10 pt-[110px] md:pt-[140px]">
-      {/* ambient ray glow — smaller + softer on mobile to save GPU */}
-      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] size-[320px] rounded-full bg-ray/25 blur-[80px] md:size-[560px] md:blur-[120px]" />
-      <div aria-hidden className="pointer-events-none absolute left-[-8%] top-64 hidden size-[380px] rounded-full bg-line/10 blur-[110px] sm:block" />
+    <section id="top" className="grain relative overflow-hidden pb-12 pt-[96px] md:pt-[120px]">
+      {/* ambient glow */}
+      <div aria-hidden className="pointer-events-none absolute -top-40 right-[-10%] size-[320px] rounded-full bg-ray/25 blur-[80px] md:size-[520px] md:blur-[120px]" />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 md:px-8 lg:grid-cols-12 lg:gap-6">
-        {/* ---- left: thesis ---- */}
-        <div className="lg:col-span-7 lg:pr-6">
-          <Eyebrow route="Student career express" station="Canada · Est. for students" />
-          <h1
-            className="hero-anim hero-anim-1 mt-5 font-display text-[44px] font-bold leading-[0.98] tracking-[-0.03em] sm:text-[64px] lg:text-[84px]"
-          >
-            Your education
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-start gap-10 px-5 md:px-8 lg:grid-cols-2 lg:gap-12">
+        {/* left: promise + trust */}
+        <div className="pt-2 lg:sticky lg:top-24">
+          <Eyebrow route="RAYEXPESS" station="Student applications · Open" />
+          <h1 className="hero-anim hero-anim-1 mt-5 font-display text-[42px] font-bold leading-[1.0] tracking-[-0.03em] sm:text-[56px] lg:text-[64px]">
+            Study. Work.
             <br />
-            should lead{" "}
+            Build your{" "}
             <span className="hand-underline font-serif font-normal italic tracking-normal">
-              somewhere.
+              career.
               <svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden>
                 <path d="M4 14 C 80 6, 200 6, 296 12" fill="none" stroke="#FFB800" strokeWidth="9" strokeLinecap="round" />
-                </svg>
-              </span>
+              </svg>
+            </span>
           </h1>
 
-          <p
-            className="hero-anim hero-anim-2 mt-6 max-w-xl text-[16.5px] leading-relaxed text-ink/70 md:text-lg"
-          >
-            <strong className="font-bold text-ink">RAYEXPESS connects students</strong> with jobs that match
-            their field of study, skills, schedule, and career goals — so you can gain real experience{" "}
-            <em className="font-serif italic">while you&apos;re still studying.</em>
+          <p className="hero-anim hero-anim-2 mt-5 max-w-lg text-[16.5px] leading-relaxed text-ink/70">
+            <strong className="font-bold text-ink">One short application.</strong> Tell us what you study,
+            what you&apos;re good at, and when you&apos;re free — we match you with student-friendly
+            jobs across Ontario.
           </p>
 
-          <div
-            className="hero-anim hero-anim-3 mt-8 flex flex-wrap items-center gap-3"
-          >
-            <ApplyButton variant="ray" className="px-7 py-4 text-base">
-              Find Student Opportunities
-            </ApplyButton>
-            <a
-              href="#employers"
-              className="group inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-[14px] font-display text-[15px] font-bold transition-all hover:bg-ink hover:text-white"
-            >
-              <Building2 className="size-4" aria-hidden />
-              Hire Student Talent
-            </a>
-          </div>
-
-          <div
-            className="hero-anim hero-anim-4 mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
-          >
-            <div className="flex -space-x-2.5" aria-hidden>
-              {["AK", "JM", "PS", "+9"].map((t, i) => (
-                <span
-                  key={t}
-                  className={
-                    "grid size-9 place-items-center rounded-full border-2 border-paper font-display text-[11px] font-bold " +
-                    (i === 3 ? "bg-ink text-ray" : i === 0 ? "bg-line text-white" : i === 1 ? "bg-moss text-white" : "bg-white text-ink")
-                  }
-                >
-                  {t}
+          <ul className="hero-anim hero-anim-3 mt-7 space-y-3">
+            {TRUST.map((t) => (
+              <li key={t.text} className="flex items-center gap-3 text-[15px] font-medium text-ink/80">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white ring-1 ring-ink/10">
+                  <t.icon className="size-4 text-moss" aria-hidden />
                 </span>
-              ))}
-            </div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink/55">
-              Student-focused employment · Field-matched · Flexible schedules
-            </p>
-          </div>
+                {t.text}
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href="#apply-form"
+            className="hero-anim hero-anim-4 mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 font-display text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-line lg:hidden"
+          >
+            Fill the application <ArrowDown className="size-4" aria-hidden />
+          </a>
+
+          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.16em] text-ink/45">
+            No account · No cover letter · No fees for students
+          </p>
         </div>
 
-        {/* ---- right: ticket stack + ray line ---- */}
-        <div className="relative lg:col-span-5">
-          <div
-            className="hero-anim hero-anim-3 relative mx-auto max-w-[420px]"
-          >
-            {/* route rail */}
-            <div className="mb-4 flex items-center justify-between rounded-2xl bg-ink px-5 py-3.5 text-white">
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ray">◆ Ray Line</span>
-              <span className="font-mono text-[11px] text-white/60">EDU → EXP → CAREER</span>
-            </div>
-
-            <div className="grid grid-cols-[28px_1fr] gap-3">
-              {/* spine */}
-              <div className="relative flex flex-col items-center" aria-hidden>
-                <div className="absolute bottom-4 top-4 w-[3px] rounded bg-ink/10" />
-                <div className="absolute bottom-4 top-4 w-[3px]">
-                  <svg className="h-full w-full" preserveAspectRatio="none" viewBox="0 0 4 300">
-                    <line x1="2" y1="0" x2="2" y2="300" stroke="#FFB800" strokeWidth="3" className="ray-flow" />
-                  </svg>
-                </div>
-                {STOPS.map((_, i) => (
-                  <div key={i} className={`z-10 grid size-6 shrink-0 place-items-center rounded-full border-[3px] border-paper ${i === 2 ? "bg-moss" : i === 1 ? "bg-line" : "bg-ray"}`}
-                    style={{ marginTop: i === 0 ? 4 : 96 }} />
-                ))}
-              </div>
-
-              <div className="space-y-3">
-                {STOPS.map((stop, i) => (
-                  <div
-                    key={stop}
-                    className={
-                      "rounded-2xl border p-4 " +
-                      (i === 1
-                        ? "ticket-notch border-ink bg-white shadow-[6px_6px_0_0_#0C1022]"
-                        : "border-ink/10 bg-white/80")
-                    }
-                  >
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/45">Stop 0{i + 1}</p>
-                    <p className="font-display text-lg font-bold tracking-tight">{stop}</p>
-                    {i === 1 ? (
-                      <div className="mt-3 border-t border-dashed border-ink/15 pt-3">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-display text-[15px] font-bold">Junior Web Developer</p>
-                            <p className="mt-1 flex items-center gap-2 font-mono text-[11px] text-ink/55">
-                              <MapPin className="size-3" /> London, ON · <Clock className="size-3" /> 15–20h/wk
-                            </p>
-                          </div>
-                          <span className="rounded-full bg-moss-soft px-2.5 py-1 font-mono text-[11px] font-bold text-moss">96% match</span>
-                        </div>
-                        <a href="#apply"
-                          className="mt-3 flex items-center justify-center gap-1.5 rounded-xl bg-ink py-2.5 font-display text-sm font-bold text-white transition-colors hover:bg-line">
-                          Get Matched <ArrowRight className="size-4" />
-                        </a>
-                      </div>
-                    ) : (
-                      <p className="mt-1 text-[13px] text-ink/55">
-                        {i === 0 ? "Computer Science · Year 2 · Available 20h/week" : "Full-time offer · $62k · Toronto"}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* floating chips */}
-            <div className="absolute -left-8 top-16 hidden -rotate-6 items-center gap-1.5 rounded-full bg-white px-3.5 py-2 shadow-lg ring-1 ring-ink/10 sm:flex">
-              <BadgeCheck className="size-4 text-moss" /> <span className="font-display text-xs font-bold">Field-matched</span>
-            </div>
-            <div className="absolute -right-4 bottom-24 hidden rotate-3 items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-white shadow-lg sm:flex">
-              <Sparkles className="size-4 text-ray" /> <span className="font-display text-xs font-bold">Study. Work. Build.</span>
-            </div>
+        {/* right: the form — visible immediately */}
+        <div id="apply" className="scroll-mt-24">
+          <div id="apply-form" className="hero-anim hero-anim-2 scroll-mt-28">
+            <ApplyForm layout="hero" />
           </div>
+          <p className="mt-4 text-center text-[13.5px] text-ink/55">
+            Prefer email? Write to{" "}
+            <a href="mailto:hire@rayexpess.ca" className="font-bold text-ink underline">
+              hire@rayexpess.ca
+            </a>
+          </p>
         </div>
       </div>
     </section>

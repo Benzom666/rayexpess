@@ -4,12 +4,8 @@ import { Menu, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { label: "Home", href: "#top" },
-  { label: "For Students", href: "#students" },
-  { label: "For Employers", href: "#employers" },
   { label: "How It Works", href: "#how" },
-  { label: "Opportunities", href: "#opportunities" },
-  { label: "About", href: "#about" },
+  { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
 
